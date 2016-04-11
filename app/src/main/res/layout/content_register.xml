@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="com.example.saurabh.tap_it.RegisterActivity"
+    tools:showIn="@layout/activity_register"
+    android:onClick="changeToLoginActivity"
+    android:background="#ffffff"
+    android:clickable="true">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageView"
+        android:src="@drawable/tapitlogo"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="50dp" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/nameTextRegister"
+        android:hint="name"
+        android:layout_marginTop="10px"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/email"
+        android:inputType="textWebEmailAddress"
+        android:layout_marginTop="10px"
+        android:layout_below="@+id/nameTextRegister"
+        android:layout_centerHorizontal="true"
+        android:hint="email" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordText"
+        android:hint="password"
+        android:layout_marginTop="90px"
+        android:inputType="textPassword"
+        android:layout_below="@+id/nameTextRegister"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Register"
+        android:id="@+id/loginButton"
+        android:onClick="registerUser"
+        android:layout_marginTop="10px"
+        android:clickable="true"
+        android:layout_below="@+id/passwordText"
+        android:textColor="@android:color/white"
+        android:layout_centerHorizontal="true"
+        android:background="#0F60A0" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login"
+        android:id="@+id/onClickChange"
+        android:layout_below="@+id/loginButton"
+        android:layout_centerHorizontal="true"
+        android:textColor="#020951"
+        android:onClick="changeToLoginActivity" />
+
+</RelativeLayout>
