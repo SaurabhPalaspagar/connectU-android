@@ -5,6 +5,10 @@
 
     <uses-permission android:name="android.permission.NFC" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />  <!-- Send DOCS using NFC -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+    <uses-sdk android:minSdkVersion="16" />  <!-- Android beam requirement -->
 
     <application
         android:allowBackup="true"
@@ -25,6 +29,10 @@
         <activity
             android:name=".RegisterActivity"
             android:label="@string/title_activity_register"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ConnectionActivity"
+            android:label="@string/title_activity_connection"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

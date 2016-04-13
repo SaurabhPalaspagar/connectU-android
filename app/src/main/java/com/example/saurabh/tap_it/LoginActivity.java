@@ -2,6 +2,7 @@ package com.example.saurabh.tap_it;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -41,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText email;
     EditText password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +50,19 @@ public class LoginActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //can only be checked after successful login
+        SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+        String loginActive=sharedPreferences.getString("loggedIn","");
+
+        //Can throw null pointer exception
+        try {
+            if (loginActive.equals("yes")) {
+                Intent call = new Intent(getApplicationContext(), ConnectionActivity.class);
+                startActivity(call);
+                finish();
+            }
+        }
+        catch(NullPointerException e){ Log.i("Error is LoggedIn Variable Check LoginActivity",e.toString());}
     }
 
     //validation of email and password
@@ -88,9 +103,6 @@ public class LoginActivity extends AppCompatActivity {
     //API POST HTTP call for Login
     public void loginRequest(View view) throws JSONException {
         Log.i("Login Request","made");
-        JSONObject obj = new JSONObject();
-        obj.put("email", "jhr10@njit.edu");
-        obj.put("password", "testing");
 
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -108,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            writeToFile(response);//Write to internal storage
+
 
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
@@ -116,8 +128,14 @@ public class LoginActivity extends AppCompatActivity {
 
                             Toast.makeText(LoginActivity.this, loginResponse, Toast.LENGTH_SHORT).show();
 
-                            if(loginResponse=="Login succeeded"){
+                            //got to connection activity on successful login
+                            if(loginResponse.equals("Login succeeded.")){
+                                setDefaults(response);
+                                writeToFile(response);//Write to internal storage
 
+                                Intent call=new Intent(getApplicationContext(),ConnectionActivity.class);
+                                startActivity(call);
+                                finish();
                             }
 
                         } catch (JSONException e) {
@@ -153,6 +171,27 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    //maintain login activity and
+    public void setDefaults(String response) throws JSONException {
+
+        JSONObject readUser = new JSONObject(response);
+        String token=readUser.getString("token");
+
+        JSONObject readUserData = new JSONObject(response).getJSONObject("message");
+        String userInfo = readUserData.getString("user");
+
+        JSONObject readUserName = new JSONObject(userInfo);
+        String name = readUserName.getString("name");
+        String email = readUserName.getString("email");
+
+        SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("username", name).apply();
+        sharedPreferences.edit().putString("email", email).apply();
+        sharedPreferences.edit().putString("token", token).apply();
+        sharedPreferences.edit().putString("loggedIn", "yes").apply();
+
+    }
+
     //using share preferences
     /*
      SharedPreferences customUserData=this.getSharedPreferences("com.example.saurabh.tap_it",Context.MODE_APPEND);
@@ -166,12 +205,24 @@ public class LoginActivity extends AppCompatActivity {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput("userData.txt", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
-            readFromFile();
+
+            Log.i("Write to file","Entered in LA.java");
+            JSONObject readUserData = new JSONObject(data).getJSONObject("message");
+            String userInfo = readUserData.getString("user");
+
+            JSONObject readUserName = new JSONObject(userInfo);
+            String name = readUserName.getString("name");
+            SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it",Context.MODE_PRIVATE);
+            sharedPreferences.edit().putString("username", name).apply();
+            String username = sharedPreferences.getString("username","");
+            //Log.i("Login Username",username);
 
         }
         catch (IOException e) {
 
             Log.e("Exception", "File write failed: " + e.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 
@@ -197,6 +248,7 @@ public class LoginActivity extends AppCompatActivity {
                 ret = stringBuilder.toString();
                 JSONObject readUserData= new JSONObject(ret).getJSONObject("message");
                 String notification = readUserData.getString("token");
+
                 Log.i("Read token from userData.txt",notification);
 
 
@@ -240,4 +292,6 @@ public class LoginActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

@@ -2,9 +2,8 @@ package com.example.saurabh.tap_it;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -44,6 +43,19 @@ public class RegisterActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //can only be checked after successful login
+        SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+        String loginActive=sharedPreferences.getString("loggedIn","");
+
+        //Can throw null pointer exception
+        try {
+            if (loginActive.equals("yes")) {
+                Intent call = new Intent(getApplicationContext(), ConnectionActivity.class);
+                startActivity(call);
+                finish();
+            }
+        }
+        catch(NullPointerException e){ Log.i("Error is LoggedIn Variable Check LoginActivity",e.toString());}
     }
 
     public void changeToLoginActivity(View view){
@@ -53,6 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     public void registerUser(View view) throws JSONException {
+
         name=(EditText) findViewById(R.id.nameTextRegister);
         email=(EditText) findViewById(R.id.email);
         password=(EditText) findViewById(R.id.passwordText);
@@ -100,14 +113,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         String url = "http://52.36.159.253/api/v0.1/user/register";
 
-        //Actual Call for login
         StringRequest postRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-
-                            writeToFile(response);//Write to internal storage
 
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
@@ -115,8 +125,15 @@ public class RegisterActivity extends AppCompatActivity {
 
                             Toast.makeText(RegisterActivity.this, loginResponse, Toast.LENGTH_SHORT).show();
 
-                            if(loginResponse=="Login succeeded"){
+                            if(loginResponse.equals("Login succeeded.")){
+                                Log.i("Entered for Connection","OK");
 
+                                setDefaults(response);
+                                writeToFile(response);//Write to internal storage
+
+                                Intent call = new Intent(getApplicationContext(), ConnectionActivity.class);
+                                startActivity(call);
+                                finish();
                             }
 
                         } catch (JSONException e) {
@@ -135,14 +152,13 @@ public class RegisterActivity extends AppCompatActivity {
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<>();
-                // the POST parameters:
-                // params.put("email", "jhr10@njit.edu");
-                //params.put("password", "testing");
+
                 name=(EditText) findViewById(R.id.nameTextRegister);
                 email=(EditText) findViewById(R.id.email);
                 password=(EditText) findViewById(R.id.passwordText);
 
                 Log.i("Email is",email.getText().toString());
+
                 params.put("name", name.getText().toString());
                 params.put("email", email.getText().toString());
                 params.put("password", password.getText().toString());
@@ -153,15 +169,37 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    //maintain login activity and
+    public void setDefaults(String response) throws JSONException {
+
+        Log.i("Inside ","set Defaults");
+        JSONObject readUser = new JSONObject(response);
+        String token=readUser.getString("token");
+
+        JSONObject readUserData = new JSONObject(response).getJSONObject("message");
+        String userInfo = readUserData.getString("user");
+        JSONObject readUserName = new JSONObject(userInfo);
+        String name = readUserName.getString("name");
+        String email = readUserName.getString("email");
+
+        SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putString("username", name).apply();
+        sharedPreferences.edit().putString("email", email).apply();
+        sharedPreferences.edit().putString("token", token).apply();
+        sharedPreferences.edit().putString("loggedIn", "yes").apply();
+
+    }
+
     private void writeToFile(String data) {
         try {
 
+            Log.i("Inside ","write to File");
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput("userData.txt", Context.MODE_PRIVATE));
             outputStreamWriter.write(data);
             outputStreamWriter.close();
         }
         catch (IOException e) {
-            Log.e("Exception", "File write failed: " + e.toString());
+            Log.e("Exception", "File write failed : " + e.toString());
         }
     }
 
