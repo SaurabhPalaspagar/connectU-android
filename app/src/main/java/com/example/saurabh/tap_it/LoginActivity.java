@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
 
     //API POST HTTP call for Login
     public void loginRequest(View view) throws JSONException {
-        Log.i("Login Request","made");
+        Log.i("Login Request", "made");
 
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -121,7 +121,6 @@ public class LoginActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
 
-
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
                             String loginResponse = jsonResponse.getString("response");
@@ -130,9 +129,12 @@ public class LoginActivity extends AppCompatActivity {
 
                             //got to connection activity on successful login
                             if(loginResponse.equals("Login succeeded.")){
+
+                                Log.i("login Successful","Inside OnResponse");
                                 setDefaults(response);
                                 writeToFile(response);//Write to internal storage
 
+                                Log.i("After set and write to file", "Inside OnResponse");
                                 Intent call=new Intent(getApplicationContext(),ConnectionActivity.class);
                                 startActivity(call);
                                 finish();
@@ -154,9 +156,7 @@ public class LoginActivity extends AppCompatActivity {
             protected Map<String, String> getParams()
             {
                 Map<String, String>  params = new HashMap<>();
-                // the POST parameters:
-               // params.put("email", "jhr10@njit.edu");
-                //params.put("password", "testing");
+
                 email=(EditText)findViewById(R.id.nameTextRegister);
                 password=(EditText)findViewById(R.id.passwordText);
 
@@ -174,7 +174,8 @@ public class LoginActivity extends AppCompatActivity {
     //maintain login activity and
     public void setDefaults(String response) throws JSONException {
 
-        JSONObject readUser = new JSONObject(response);
+        Log.i("set Default","entered");
+        JSONObject readUser = new JSONObject(response).getJSONObject("message");
         String token=readUser.getString("token");
 
         JSONObject readUserData = new JSONObject(response).getJSONObject("message");
@@ -189,6 +190,7 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("email", email).apply();
         sharedPreferences.edit().putString("token", token).apply();
         sharedPreferences.edit().putString("loggedIn", "yes").apply();
+        Log.i("set Default","code complete");
 
     }
 

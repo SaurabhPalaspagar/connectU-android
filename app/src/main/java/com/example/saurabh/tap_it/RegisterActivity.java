@@ -125,7 +125,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             Toast.makeText(RegisterActivity.this, loginResponse, Toast.LENGTH_SHORT).show();
 
-                            if(loginResponse.equals("Login succeeded.")){
+                            if(loginResponse.equals("Registration succeeded.")){
                                 Log.i("Entered for Connection","OK");
 
                                 setDefaults(response);
@@ -173,7 +173,7 @@ public class RegisterActivity extends AppCompatActivity {
     public void setDefaults(String response) throws JSONException {
 
         Log.i("Inside ","set Defaults");
-        JSONObject readUser = new JSONObject(response);
+        JSONObject readUser = new JSONObject(response).getJSONObject("message");;
         String token=readUser.getString("token");
 
         JSONObject readUserData = new JSONObject(response).getJSONObject("message");
@@ -187,6 +187,7 @@ public class RegisterActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("email", email).apply();
         sharedPreferences.edit().putString("token", token).apply();
         sharedPreferences.edit().putString("loggedIn", "yes").apply();
+        Log.i("Done with ", "set Defaults");
 
     }
 

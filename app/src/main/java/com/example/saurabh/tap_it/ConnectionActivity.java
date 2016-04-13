@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -33,6 +34,7 @@ import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,7 +43,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ConnectionActivity extends AppCompatActivity
@@ -112,8 +116,19 @@ public class ConnectionActivity extends AppCompatActivity
                     public void onResponse(String response) {
                         try {
 
+                            JSONObject responseArray=new JSONObject(response);
+                            JSONArray jsonResponse = responseArray.getJSONArray("response");
+                            List<String> names=new ArrayList<String>();
 
-                            JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
+                            for(int i=0;i<jsonResponse.length();i++){
+
+                                JSONObject connectionObject=jsonResponse.getJSONObject(i);
+                                String name=connectionObject.getString("name");
+                                names.add(name);
+                            }
+
+                            putInListView(names);
+
 
 
 
@@ -134,7 +149,8 @@ public class ConnectionActivity extends AppCompatActivity
             {
                 Map<String, String>  params = new HashMap<>();
 
-                Log.i("Email is",email.getText().toString());
+                SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+                token = sharedPreferences.getString("token", "");
 
                 params.put("token", token);
 
@@ -144,6 +160,12 @@ public class ConnectionActivity extends AppCompatActivity
         Volley.newRequestQueue(this).add(postRequest);
     }
 
+    public void putInListView(List<String> names ){
+
+        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,R.layout.content_connection,names);
+        ListView listView=(ListView)findViewById(R.id.connectionList);
+        listView.setAdapter(arrayAdapter);
+    }
 
         @Override
     public void onBackPressed() {
