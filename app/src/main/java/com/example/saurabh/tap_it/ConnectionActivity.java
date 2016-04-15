@@ -48,19 +48,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.saurabh.tap_it.R.id.usernameNav;
+
 public class ConnectionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    TextView username;
     TextView email;
     String token;
-
-
+    public static Context contextOfApplication;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        ListView connections=(ListView) findViewById(R.id.connectionList);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connection);
@@ -81,90 +79,85 @@ public class ConnectionActivity extends AppCompatActivity
 
         try {
             String name = sharedPreferences.getString("username", "");
-            String userEmail = sharedPreferences.getString("email", "");
+            //String userEmail = sharedPreferences.getString("email", "");
 
-            Log.i("Login Username in connection activity",name);
-            Log.i("Login Username in connection activity",name);
+            Log.i("Login Username in connection activity", name);
 
-            username = (TextView) findViewById(R.id.usernameNavBar);
+
+            TextView username  = (TextView) findViewById(R.id.usernameNav);
             username.setText(name);
-            email = (TextView) findViewById(R.id.emailNavBar);
-            username.setText(userEmail);
+
         }
-        catch(NullPointerException e){ Log.i("Error is LoggedIn Variable Check ConnectionActivity",e.toString());}
+        catch(NullPointerException e){ Log.i("Error is username variable Check ConnectionActivity",e.toString());}
 
-        populateConnections(navigationView);
-
+        contextOfApplication = getApplicationContext(); //passing the context to user
+        putInListView(contextOfApplication);
     }
 
-    public void populateConnections(View view){
 
-        // Instantiate the cache
-        Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
-        // Set up the network to use HttpURLConnection as the HTTP client.
-        Network network = new BasicNetwork(new HurlStack());
-        // Instantiate the RequestQueue with the cache and network.
-        RequestQueue queue = new RequestQueue(cache, network);
-        queue.start();
+    public void putInListView(final Context context){
 
-        String url = "http://52.36.159.253/api/v0.1/relationship/list";
+        SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+        String token = sharedPreferences.getString("token", "");
+        RequestQueue queue = Volley.newRequestQueue(this);
 
-        //GET request for list of connection
-        StringRequest postRequest = new StringRequest(Request.Method.GET, url,
+        String url ="http://52.36.159.253/api/v0.1/relationship/list?token="+token;
+
+        // Request a string response from the provided URL.
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+                            String token = sharedPreferences.getString("token", "");
+
+                            Log.i("Token value in request try", token);
 
                             JSONObject responseArray=new JSONObject(response);
                             JSONArray jsonResponse = responseArray.getJSONArray("response");
-                            List<String> names=new ArrayList<String>();
+
+
+                            ArrayList<User> users = new ArrayList<User>();
+                            String name,company;
 
                             for(int i=0;i<jsonResponse.length();i++){
 
                                 JSONObject connectionObject=jsonResponse.getJSONObject(i);
-                                String name=connectionObject.getString("name");
-                                names.add(name);
+                                name=connectionObject.getString("name");
+
+                                Log.i("Name in User array", name);
+
+                                String companyDetail=connectionObject.getString("company");
+                                JSONObject companyObject=new JSONObject(companyDetail);
+                                company=companyObject.getString("company_name");
+
+                                Log.i("User-Company in Array", company);
+
+                                users.add(new User(name, company));
+
+                                //ArrayList<User> arrayOfUsers = User.getUsers();
+                                CustomUsersAdapter adapter = new CustomUsersAdapter(context, users);
+
+                                // Attach the adapter to a ListView
+                                ListView listView = (ListView) findViewById(R.id.lvUsers);
+                                listView.setAdapter(adapter);
+
                             }
-
-                            putInListView(names);
-
-
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }
-        ) {
+                }, new Response.ErrorListener() {
             @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<>();
-
-                SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
-                token = sharedPreferences.getString("token", "");
-
-                params.put("token", token);
-
-                return params;
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
             }
-        };
-        Volley.newRequestQueue(this).add(postRequest);
-    }
+        });
 
-    public void putInListView(List<String> names ){
+        // Add the request to the RequestQueue.
+        queue.add(stringRequest);
 
-        ArrayAdapter<String> arrayAdapter=new ArrayAdapter<String>(this,R.layout.content_connection,names);
-        ListView listView=(ListView)findViewById(R.id.connectionList);
-        listView.setAdapter(arrayAdapter);
     }
 
         @Override
@@ -205,11 +198,15 @@ public class ConnectionActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        if (id == R.id.nav_camera) {   //QR code
 
-        }  else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_gallery) {  //NFC
+
+
+        }  else if (id == R.id.nav_manage) {  //Profile
+
+            Intent call=new Intent(getApplicationContext(),ProfileActivity.class);
+            startActivity(call);
 
         } else if (id == R.id.nav_share) {
 

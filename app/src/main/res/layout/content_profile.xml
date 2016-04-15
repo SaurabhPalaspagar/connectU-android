@@ -9,18 +9,24 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.saurabh.tap_it.ConnectionActivity"
-    tools:showIn="@layout/app_bar_connection">
+    tools:context="com.example.saurabh.tap_it.ProfileActivity"
+    tools:showIn="@layout/activity_profile">
 
-    <ListView
-
-        android:id="@+id/lvUsers"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
+        android:id="@+id/profileUserName"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true" >
-    </ListView>
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="34dp" />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/profileEmail"
+        android:layout_below="@+id/profileUserName"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="35dp" />
 </RelativeLayout>
