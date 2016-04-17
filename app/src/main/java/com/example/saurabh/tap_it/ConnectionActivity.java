@@ -1,8 +1,11 @@
 package com.example.saurabh.tap_it;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -56,6 +59,8 @@ public class ConnectionActivity extends AppCompatActivity
     TextView email;
     String token;
     public static Context contextOfApplication;
+    NfcAdapter mNfcAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,12 +91,27 @@ public class ConnectionActivity extends AppCompatActivity
 
             TextView username  = (TextView) findViewById(R.id.usernameNav);
             username.setText(name);
+            mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
 
         }
-        catch(NullPointerException e){ Log.i("Error is username variable Check ConnectionActivity",e.toString());}
+        catch(NullPointerException e){ Log.i("Error is username variable/NFC Check ConnectionActivity",e.toString());}
 
         contextOfApplication = getApplicationContext(); //passing the context to user
         putInListView(contextOfApplication);
+
+        //NFC call
+        NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+            Toast.makeText(this, "Sorry this device does not have NFC", Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (!mAdapter.isEnabled()) {
+            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+        }
+
+       // mAdapter.setNdefPushMessageCallback(this, this);
     }
 
 
@@ -201,6 +221,8 @@ public class ConnectionActivity extends AppCompatActivity
         if (id == R.id.nav_camera) {   //QR code
 
         } else if (id == R.id.nav_gallery) {  //NFC
+
+          
 
 
         }  else if (id == R.id.nav_manage) {  //Profile
