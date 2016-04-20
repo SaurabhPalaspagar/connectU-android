@@ -46,10 +46,25 @@
             android:name=".ProfileActivity"
             android:label="@string/title_activity_profile"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <activity
             android:name=".NFCActivity"
-            android:label="@string/title_activity_nfc"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="NFC Data Sender">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".NFCDisplayActivity"
+            android:label="NFC Data Display">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

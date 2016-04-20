@@ -220,10 +220,12 @@ public class ConnectionActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {   //QR code
 
-        } else if (id == R.id.nav_gallery) {  //NFC
+        } else
 
-          
+        if (id == R.id.nav_gallery) {  //NFC
 
+            Intent call=new Intent(getApplicationContext(),NFCActivity.class);
+            startActivity(call);
 
         }  else if (id == R.id.nav_manage) {  //Profile
 

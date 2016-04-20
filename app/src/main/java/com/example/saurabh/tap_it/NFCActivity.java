@@ -1,29 +1,66 @@
 package com.example.saurabh.tap_it;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.nfc.NdefMessage;
+import android.nfc.NdefRecord;
+import android.nfc.NfcAdapter;
+import android.nfc.NfcEvent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.Toast;
 
-public class NFCActivity extends AppCompatActivity {
+
+public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessageCallback {
+
+    private EditText mEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mEditText = (EditText) findViewById(R.id.edit_text_field);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+            mEditText.setText("Sorry this device does not have NFC.");
+            return;
+        }
+
+        if (!mAdapter.isEnabled()) {
+            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
+        }
+
+        mAdapter.setNdefPushMessageCallback(this, this);
     }
 
+    /**
+     * Ndef Record that will be sent over via NFC
+     * @param nfcEvent
+     * @return
+     */
+    @Override
+    public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
+
+
+
+       /* SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+        String message = sharedPreferences.getString("token", "");
+
+        Log.i("Token in NFC is", message);
+        mEditText.setText(message); */
+        String message = mEditText.getText().toString();
+
+        NdefRecord ndefRecord = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());
+        }
+        NdefMessage ndefMessage = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            ndefMessage = new NdefMessage(ndefRecord);
+        }
+        return ndefMessage;
+    }
 }
