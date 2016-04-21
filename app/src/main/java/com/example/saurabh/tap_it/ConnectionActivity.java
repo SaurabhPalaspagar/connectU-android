@@ -232,7 +232,10 @@ public class ConnectionActivity extends AppCompatActivity
             Intent call=new Intent(getApplicationContext(),ProfileActivity.class);
             startActivity(call);
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) { //Settings
+
+            Intent call = new Intent(getApplicationContext(), SettingActivity.class);
+            startActivity(call);
 
         } else if (id == R.id.nav_logout) {
             //First set the default value

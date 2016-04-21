@@ -22,7 +22,8 @@
             android:id="@+id/txt"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true" />
+            android:layout_alignParentStart="true"
+            android:textSize="40px" />
 
         <TextView
             android:layout_width="match_parent"
@@ -31,6 +32,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:layout_below="@+id/txt" />
+            android:layout_below="@+id/txt"
+            android:textColor="#ffffff"
+            android:textSize="40px" />
     </RelativeLayout>
 </LinearLayout>

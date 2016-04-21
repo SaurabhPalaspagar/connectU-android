@@ -21,14 +21,15 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc);
-        mEditText = (EditText) findViewById(R.id.edit_text_field);
+
+        //mEditText = (EditText) findViewById(R.id.edit_text_field);
 
         NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
-            mEditText.setText("Sorry this device does not have NFC.");
+            Toast.makeText(this, "Sorry this device does not have NFC.", Toast.LENGTH_LONG).show();
+           // mEditText.setText("Sorry this device does not have NFC.");
             return;
         }
-
         if (!mAdapter.isEnabled()) {
             Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
         }
@@ -46,12 +47,13 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
 
 
 
-       /* SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+        SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
         String message = sharedPreferences.getString("token", "");
 
+        /*
         Log.i("Token in NFC is", message);
         mEditText.setText(message); */
-        String message = mEditText.getText().toString();
+        //String message = mEditText.getText().toString();
 
         NdefRecord ndefRecord = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
