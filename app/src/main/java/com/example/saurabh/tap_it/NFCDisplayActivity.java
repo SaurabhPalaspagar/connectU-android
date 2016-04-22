@@ -40,7 +40,7 @@ public class NFCDisplayActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nfc_display);
-        //mTextView = (TextView) findViewById(R.id.text_view);
+        mTextView = (TextView) findViewById(R.id.text_view);
     }
 
     @Override
@@ -54,18 +54,20 @@ public class NFCDisplayActivity extends Activity {
                     NfcAdapter.EXTRA_NDEF_MESSAGES);
 
             NdefMessage message = (NdefMessage) rawMessages[0]; // only one message transferred
-            //mTextView.setText(new String(message.getRecords()[0].getPayload()));
-            String nfcConn= String.valueOf(message.getRecords()[0].getPayload());
+            mTextView.setText(new String(message.getRecords()[0].getPayload()));
+
+            String nfcConn=mTextView.getText().toString(); //String.valueOf(message.getRecords()[0].getPayload());
 
             Log.i("nfcConn received from one device",nfcConn);
 
             SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString("nfcConnection", nfcConn).apply();
 
-            Toast.makeText(NFCDisplayActivity.this, "Connection Successful", Toast.LENGTH_LONG).show();
+
 
             //Make a POST request
             try {
+                Log.i("Connection request made",nfcConn);
                 connectionRequest();
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -76,11 +78,9 @@ public class NFCDisplayActivity extends Activity {
 
         } else
             mTextView.setText("Waiting for NDEF Message");
-
     }
 
     public void connectionRequest() throws JSONException {
-        Log.i("Connection Request", "made");
 
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -106,6 +106,7 @@ public class NFCDisplayActivity extends Activity {
 
                             Toast.makeText(NFCDisplayActivity.this, connectionResponse, Toast.LENGTH_SHORT).show();
 
+                            Toast.makeText(ConnectionActivity.contextOfApplication, connectionResponse, Toast.LENGTH_LONG).show();
                             if(connectionStatus.equals("OK")){
 
                             Intent call = new Intent(getApplicationContext(), ConnectionActivity.class);
@@ -113,8 +114,6 @@ public class NFCDisplayActivity extends Activity {
                             finish();
 
                             }
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -142,7 +141,5 @@ public class NFCDisplayActivity extends Activity {
             }
         };
         Volley.newRequestQueue(this).add(postRequest);
-
-
     }
 }

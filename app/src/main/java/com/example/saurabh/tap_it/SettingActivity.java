@@ -70,10 +70,6 @@ public class SettingActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
-                            String token = sharedPreferences.getString("token", "");
-
-                            Log.i("Token value in request try", token);
 
                             JSONObject responseObject=new JSONObject(response);
                             JSONObject responseObj=responseObject.getJSONObject("response");
@@ -122,7 +118,6 @@ public class SettingActivity extends AppCompatActivity {
 
     //PUT request after saving the edited name
     public void editUserProfile(View view) throws JSONException {
-        Log.i("Login Request", "made");
 
         // Instantiate the cache
         Cache cache = new DiskBasedCache(getCacheDir(), 1024 * 1024); // 1MB cap
@@ -144,11 +139,11 @@ public class SettingActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
                             String status = jsonResponse.getString("status");
+                            String responsesOnSuccess = jsonResponse.getString("response");
 
-                            //got to connection activity on successful login
                             if(status.equals("OK")){
 
-                                Toast.makeText(SettingActivity.this, status, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SettingActivity.this, responsesOnSuccess, Toast.LENGTH_SHORT).show();
                             }
 
                         } catch (JSONException e) {
@@ -176,13 +171,17 @@ public class SettingActivity extends AppCompatActivity {
                 websiteURL=(TextView) findViewById(R.id.settingWebsite);
                 companyName=(TextView) findViewById(R.id.settingCompanyName);
 
+                SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
+                String token = sharedPreferences.getString("token", "");
+
                 params.put("name", name.getText().toString());
                 params.put("email", email.getText().toString());
                 params.put("twitter", twitterHandle.getText().toString());
                 params.put("linkedin", lnUsername.getText().toString());
                 params.put("resume", resumeURL.getText().toString());
                 params.put("website", websiteURL.getText().toString());
-                params.put("comptany", companyName.getText().toString());
+                params.put("company", companyName.getText().toString());
+                params.put("token", token);
                 return params;
             }
         };

@@ -2,6 +2,7 @@ package com.example.saurabh.tap_it;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -45,14 +46,11 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
     @Override
     public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
 
-
-
         SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
         String message = sharedPreferences.getString("token", "");
 
-        /*
-        Log.i("Token in NFC is", message);
-        mEditText.setText(message); */
+        Log.i("Token in NFC while sending is", message);
+       /* mEditText.setText(message); */
         //String message = mEditText.getText().toString();
 
         NdefRecord ndefRecord = null;
@@ -64,5 +62,7 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
             ndefMessage = new NdefMessage(ndefRecord);
         }
         return ndefMessage;
+
+
     }
 }
