@@ -132,9 +132,7 @@ public class NFCDisplayActivity extends Activity {
                 Map<String, String>  params = new HashMap<>();
                 SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
                 String token = sharedPreferences.getString("token", "");
-
                 String nfcConnection = sharedPreferences.getString("nfcConnection", "");
-
                 params.put("token", token);
                 params.put("connection_token", nfcConnection);
                 return params;

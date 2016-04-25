@@ -1,16 +1,11 @@
 package com.example.saurabh.tap_it;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,45 +14,23 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.android.volley.Cache;
-import com.android.volley.Network;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.BasicNetwork;
-import com.android.volley.toolbox.DiskBasedCache;
-import com.android.volley.toolbox.HurlStack;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static com.example.saurabh.tap_it.R.id.usernameNav;
 
 public class ConnectionActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     TextView email;
-    String token;
     public static Context contextOfApplication;
     NfcAdapter mNfcAdapter;
 
@@ -80,7 +53,7 @@ public class ConnectionActivity extends AppCompatActivity
 
         //Patch username and email in NavBar
         SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
-        token = sharedPreferences.getString("token", "");
+        String token = sharedPreferences.getString("token", "");
 
         try {
             String name = sharedPreferences.getString("username", "");
@@ -88,11 +61,8 @@ public class ConnectionActivity extends AppCompatActivity
 
             Log.i("Login Username in connection activity", name);
 
-
             TextView username  = (TextView) findViewById(R.id.usernameNav);
             username.setText(name);
-            mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-
 
         }
         catch(NullPointerException e){ Log.i("Error is username variable/NFC Check ConnectionActivity",e.toString());}
@@ -100,20 +70,16 @@ public class ConnectionActivity extends AppCompatActivity
         contextOfApplication = getApplicationContext(); //passing the context to user
         putInListView(contextOfApplication);
 
-        //NFC call
-        NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (mAdapter == null) {
-            Toast.makeText(this, "Sorry this device does not have NFC", Toast.LENGTH_LONG).show();
-            return;
-        }
-
-        if (!mAdapter.isEnabled()) {
-            Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
-        }
-
-       // mAdapter.setNdefPushMessageCallback(this, this);
     }
 
+    @Override
+    public void onResume(){
+        Log.i("onResume","done");
+        super.onResume();
+        contextOfApplication = getApplicationContext(); //passing the context to user
+        putInListView(contextOfApplication);
+
+    }
 
     public void putInListView(final Context context){
 
@@ -129,15 +95,17 @@ public class ConnectionActivity extends AppCompatActivity
                     @Override
                     public void onResponse(String response) {
                         try {
+
                             SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
                             String token = sharedPreferences.getString("token", "");
 
-                            Log.i("Token value in request try", token);
+                            Log.i("Token value in Connection request try", token);
 
                             JSONObject responseArray=new JSONObject(response);
                             JSONArray jsonResponse = responseArray.getJSONArray("response");
 
 
+                            ListView listView = (ListView) findViewById(R.id.lvUsers);
                             ArrayList<User> users = new ArrayList<User>();
                             String name,company;
 
@@ -145,22 +113,22 @@ public class ConnectionActivity extends AppCompatActivity
 
                                 JSONObject connectionObject=jsonResponse.getJSONObject(i);
                                 name=connectionObject.getString("name");
-
-                                Log.i("Name in User array", name);
-
                                 String companyDetail=connectionObject.getString("company");
-                                JSONObject companyObject=new JSONObject(companyDetail);
-                                company=companyObject.getString("company_name");
+                                if(companyDetail.equals("null")){
+                                    companyDetail="null";
+                                    users.add(new User(name, companyDetail));
+                                }
+                                else {
+                                    JSONObject companyObject = new JSONObject(companyDetail);
+                                    company = companyObject.getString("company_name");
+                                    Log.i("User-Company in Array", company);
 
-                                Log.i("User-Company in Array", company);
-
-                                users.add(new User(name, company));
-
-                                //ArrayList<User> arrayOfUsers = User.getUsers();
+                                    users.add(new User(name, company));
+                                }
                                 CustomUsersAdapter adapter = new CustomUsersAdapter(context, users);
 
                                 // Attach the adapter to a ListView
-                                ListView listView = (ListView) findViewById(R.id.lvUsers);
+
                                 listView.setAdapter(adapter);
 
                             }

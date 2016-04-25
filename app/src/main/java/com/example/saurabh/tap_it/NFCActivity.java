@@ -28,13 +28,11 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
         NfcAdapter mAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mAdapter == null) {
             Toast.makeText(this, "Sorry this device does not have NFC.", Toast.LENGTH_LONG).show();
-           // mEditText.setText("Sorry this device does not have NFC.");
             return;
         }
         if (!mAdapter.isEnabled()) {
             Toast.makeText(this, "Please enable NFC via Settings.", Toast.LENGTH_LONG).show();
         }
-
         mAdapter.setNdefPushMessageCallback(this, this);
     }
 
@@ -50,8 +48,6 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
         String message = sharedPreferences.getString("token", "");
 
         Log.i("Token in NFC while sending is", message);
-       /* mEditText.setText(message); */
-        //String message = mEditText.getText().toString();
 
         NdefRecord ndefRecord = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -62,7 +58,5 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
             ndefMessage = new NdefMessage(ndefRecord);
         }
         return ndefMessage;
-
-
     }
 }
