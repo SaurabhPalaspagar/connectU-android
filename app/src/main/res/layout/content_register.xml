@@ -11,17 +11,20 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.saurabh.tap_it.RegisterActivity"
     tools:showIn="@layout/activity_register"
-    android:background="#ffffff"
+    android:background="#365c8c"
     android:clickable="true">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView"
-        android:src="@drawable/tapitlogo"
-        android:layout_above="@+id/nameTextRegister"
+        android:src="@drawable/business"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_above="@+id/nameTextRegister"
+        android:layout_below="@+id/textView8"
+        android:layout_alignRight="@+id/nameTextRegister"
+        android:layout_alignEnd="@+id/nameTextRegister" />
 
     <EditText
         android:layout_width="match_parent"
@@ -31,7 +34,9 @@
         android:layout_marginTop="10px"
         android:layout_centerHorizontal="true"
         android:inputType="textPersonName"
-        android:hint="name" />
+        android:hint="name"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff" />
 
     <EditText
         android:layout_width="match_parent"
@@ -41,7 +46,9 @@
         android:layout_below="@+id/nameTextRegister"
         android:layout_centerHorizontal="true"
         android:inputType="textEmailAddress"
-        android:hint="email" />
+        android:hint="email"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff" />
 
     <EditText
         android:layout_width="match_parent"
@@ -51,7 +58,9 @@
         android:layout_marginTop="10px"
         android:layout_centerHorizontal="true"
         android:inputType="textPassword"
-        android:hint="password" />
+        android:hint="password"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff" />
 
     <Button
         android:layout_width="wrap_content"
@@ -62,9 +71,9 @@
         android:layout_marginTop="10px"
         android:clickable="true"
         android:layout_below="@+id/passwordText"
-        android:textColor="@android:color/white"
+        android:textColor="#000000"
         android:layout_centerHorizontal="true"
-        android:background="#0F60A0" />
+        android:background="#ffffff" />
 
 
     <TextView
@@ -74,7 +83,17 @@
         android:id="@+id/onClickChange"
         android:layout_below="@+id/loginButton"
         android:layout_centerHorizontal="true"
-        android:textColor="#020951"
+        android:textColor="#ffffff"
         android:onClick="changeToLoginActivity" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ConnectU"
+        android:id="@+id/textView8"
+        android:textColor="#f6f1f1"
+        android:textSize="100px"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

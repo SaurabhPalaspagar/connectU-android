@@ -118,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String response) {
                         try {
-
+                            
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
                             String loginResponse = jsonResponse.getString("response");
@@ -127,9 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             if(loginResponse.equals("Registration succeeded.")){
                                 Log.i("Entered for Connection","OK");
-
                                 setDefaults(response);
-                                writeToFile(response);//Write to internal storage
 
                                 Intent call = new Intent(getApplicationContext(), ConnectionActivity.class);
                                 startActivity(call);
@@ -189,19 +187,6 @@ public class RegisterActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("loggedIn", "yes").apply();
         Log.i("Done with ", "set Defaults");
 
-    }
-
-    private void writeToFile(String data) {
-        try {
-
-            Log.i("Inside ","write to File");
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput("userData.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-        }
-        catch (IOException e) {
-            Log.e("Exception", "File write failed : " + e.toString());
-        }
     }
 
 }

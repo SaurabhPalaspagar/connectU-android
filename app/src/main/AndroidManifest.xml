@@ -69,7 +69,25 @@
         <activity
             android:name=".SettingActivity"
             android:label="@string/title_activity_setting"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".ContactActivity"
+            android:label="@string/title_activity_contact"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <activity
+                android:name=".MyBrowser"
+                android:label="MyBrowser Activity" >
+                <intent-filter>
+                    <action android:name="android.intent.action.VIEW" />
+                    <action android:name="com.dsociety.activities.MyBrowser" />
+
+                    <category android:name="android.intent.category.DEFAULT" />
+
+                    <data android:scheme="http" />
+                </intent-filter>
+            </activity>
+        </activity>
     </application>
 
 </manifest>

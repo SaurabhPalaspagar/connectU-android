@@ -132,7 +132,6 @@ public class LoginActivity extends AppCompatActivity {
 
                                 Log.i("login Successful","Inside OnResponse");
                                 setDefaults(response);
-                                writeToFile(response);//Write to internal storage
 
                                 Log.i("After set and write to file", "Inside OnResponse");
                                 Intent call=new Intent(getApplicationContext(),ConnectionActivity.class);
@@ -192,78 +191,6 @@ public class LoginActivity extends AppCompatActivity {
         sharedPreferences.edit().putString("loggedIn", "yes").apply();
         Log.i("set Default","code complete");
 
-    }
-
-    //using share preferences
-    /*
-     SharedPreferences customUserData=this.getSharedPreferences("com.example.saurabh.tap_it",Context.MODE_APPEND);
-     String username= getSharedPreferences.getString("Username", "Saurabh");
-     Print username
-     */
-
-    //Write into file
-    private void writeToFile(String data) {
-        try {
-            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput("userData.txt", Context.MODE_PRIVATE));
-            outputStreamWriter.write(data);
-            outputStreamWriter.close();
-
-            Log.i("Write to file","Entered in LA.java");
-            JSONObject readUserData = new JSONObject(data).getJSONObject("message");
-            String userInfo = readUserData.getString("user");
-
-            JSONObject readUserName = new JSONObject(userInfo);
-            String name = readUserName.getString("name");
-            SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it",Context.MODE_PRIVATE);
-            sharedPreferences.edit().putString("username", name).apply();
-            String username = sharedPreferences.getString("username","");
-            //Log.i("Login Username",username);
-
-        }
-        catch (IOException e) {
-
-            Log.e("Exception", "File write failed: " + e.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    //read userData.txt
-    private String readFromFile() {
-
-        String ret = "";
-
-        try {
-            InputStream inputStream = openFileInput("userData.txt");
-
-            if ( inputStream != null ) {
-                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
-                StringBuilder stringBuilder = new StringBuilder();
-
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    stringBuilder.append(receiveString);
-                }
-
-                inputStream.close();
-                ret = stringBuilder.toString();
-                JSONObject readUserData= new JSONObject(ret).getJSONObject("message");
-                String notification = readUserData.getString("token");
-
-                Log.i("Read token from userData.txt",notification);
-
-
-            }
-        }
-        catch (FileNotFoundException e) {
-            Log.e("login activity", "File not found: " + e.toString());
-        } catch (IOException e) {
-            Log.e("login activity", "Can not read file: " + e.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return ret;
     }
 
     //go to register activity

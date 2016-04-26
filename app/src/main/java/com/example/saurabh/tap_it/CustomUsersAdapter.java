@@ -1,7 +1,6 @@
 package com.example.saurabh.tap_it;
 
 import java.util.ArrayList;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

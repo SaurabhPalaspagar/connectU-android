@@ -14,8 +14,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -65,10 +69,21 @@ public class ConnectionActivity extends AppCompatActivity
             username.setText(name);
 
         }
-        catch(NullPointerException e){ Log.i("Error is username variable/NFC Check ConnectionActivity",e.toString());}
+        catch(NullPointerException e){ Log.i("Error is username variable ConnectionActivity",e.toString());}
+
+
 
         contextOfApplication = getApplicationContext(); //passing the context to user
         putInListView(contextOfApplication);
+
+        //Get contact details of the list
+        ListView listContent = (ListView)findViewById(R.id.lvUsers);
+        listContent.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                popUpContact((int) parent.getItemIdAtPosition(position));
+            }
+        });
 
     }
 
@@ -78,6 +93,14 @@ public class ConnectionActivity extends AppCompatActivity
         super.onResume();
         contextOfApplication = getApplicationContext(); //passing the context to user
         putInListView(contextOfApplication);
+    }
+
+    public void popUpContact(int position){
+        //Log.i("position in pop up","" + position);
+        SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_PRIVATE);
+        sharedPreferences.edit().putInt("userLink", position).apply();
+        Intent i=new Intent(getApplicationContext(),ContactActivity.class);
+        startActivity(i);
 
     }
 
@@ -126,9 +149,7 @@ public class ConnectionActivity extends AppCompatActivity
                                     users.add(new User(name, company));
                                 }
                                 CustomUsersAdapter adapter = new CustomUsersAdapter(context, users);
-
                                 // Attach the adapter to a ListView
-
                                 listView.setAdapter(adapter);
 
                             }
