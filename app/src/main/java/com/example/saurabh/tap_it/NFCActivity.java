@@ -47,8 +47,6 @@ public class NFCActivity extends Activity implements NfcAdapter.CreateNdefMessag
         SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
         String message = sharedPreferences.getString("token", "");
 
-        Log.i("Token in NFC while sending is", message);
-
         NdefRecord ndefRecord = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
             ndefRecord = NdefRecord.createMime("text/plain", message.getBytes());

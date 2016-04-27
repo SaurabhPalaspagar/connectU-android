@@ -160,8 +160,8 @@ public class ContactActivity extends AppCompatActivity {
         // Add the request to the RequestQueue.
         queue.add(stringRequest);
     }
-    public void onResume(){
+   /* public void onResume(){
         super.onResume();
         populateContact();
-    }
+    } */
 }

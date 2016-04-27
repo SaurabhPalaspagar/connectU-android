@@ -136,9 +136,11 @@ public class ConnectionActivity extends AppCompatActivity
 
                                 JSONObject connectionObject=jsonResponse.getJSONObject(i);
                                 name=connectionObject.getString("name");
-                                String companyDetail=connectionObject.getString("company");
+                                String companyDetail=connectionObject.getString("company"); //updated_at
+                                String dateConnected=connectionObject.getString("updated_at");
                                 if(companyDetail.equals("null")){
-                                    companyDetail="null";
+                                    companyDetail=" ";
+
                                     users.add(new User(name, companyDetail));
                                 }
                                 else {

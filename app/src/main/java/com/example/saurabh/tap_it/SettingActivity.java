@@ -56,6 +56,7 @@ public class SettingActivity extends AppCompatActivity {
         getProfileData(contextOfApplication);
     }
 
+    //Fill the Settings Page by making a get request
     public void getProfileData(final Context context){
 
         SharedPreferences sharedPreferences=getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_APPEND);
@@ -82,6 +83,9 @@ public class SettingActivity extends AppCompatActivity {
                             String website=responseObj.getString("website");
                             String company=responseObj.getString("company");
 
+                            JSONObject companyObject=new JSONObject(company);
+                            String companyWorkName=companyObject.getString("company_name");
+
                              name=(TextView) findViewById(R.id.settingName);
                              email=(TextView) findViewById(R.id.settingEmail);
                              twitterHandle=(TextView) findViewById(R.id.settingHandle);
@@ -96,7 +100,7 @@ public class SettingActivity extends AppCompatActivity {
                             lnUsername.setText(linkedin);
                             resumeURL.setText(resume);
                             websiteURL.setText(website);
-                            companyName.setText(company);
+                            companyName.setText(companyWorkName);
 
 
                         } catch (JSONException e) {

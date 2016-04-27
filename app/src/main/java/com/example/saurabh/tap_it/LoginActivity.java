@@ -124,19 +124,23 @@ public class LoginActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);//.getJSONObject("response");
 
                             String loginResponse = jsonResponse.getString("response");
+                            Log.i("Login response is",loginResponse);
 
-                            Toast.makeText(LoginActivity.this, loginResponse, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, loginResponse, Toast.LENGTH_LONG).show();
 
                             //got to connection activity on successful login
                             if(loginResponse.equals("Login succeeded.")){
 
-                                Log.i("login Successful","Inside OnResponse");
+                                Toast.makeText(LoginActivity.this, loginResponse, Toast.LENGTH_SHORT).show();
                                 setDefaults(response);
 
                                 Log.i("After set and write to file", "Inside OnResponse");
                                 Intent call=new Intent(getApplicationContext(),ConnectionActivity.class);
                                 startActivity(call);
                                 finish();
+                            }
+                            else{
+                                Toast.makeText(LoginActivity.this, loginResponse, Toast.LENGTH_LONG).show();
                             }
 
                         } catch (JSONException e) {

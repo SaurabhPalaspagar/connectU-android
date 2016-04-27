@@ -58,7 +58,6 @@ public class NFCDisplayActivity extends Activity {
 
             String nfcConn=mTextView.getText().toString(); //String.valueOf(message.getRecords()[0].getPayload());
 
-            Log.i("nfcConn received from one device",nfcConn);
 
             SharedPreferences sharedPreferences=this.getSharedPreferences("com.example.saurabh.tap_it", Context.MODE_PRIVATE);
             sharedPreferences.edit().putString("nfcConnection", nfcConn).apply();
@@ -67,7 +66,6 @@ public class NFCDisplayActivity extends Activity {
 
             //Make a POST request
             try {
-                Log.i("Connection request made",nfcConn);
                 connectionRequest();
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -25,7 +25,7 @@
         android:layout_toRightOf="@+id/tvName"
 
         android:paddingRight="6dp"
-        android:text="from " />
+        android:text=" - " />
 
     <TextView
         android:id="@+id/tvCompany"
